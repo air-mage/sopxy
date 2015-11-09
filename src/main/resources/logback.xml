@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	<property name="defaultPattern"
+		value="%d{yyyy-MM-dd HH:mm:ss,SSS Z} %-5p [%t] [%c]: %msg%n" />
+
+	<appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${defaultPattern}</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.springframework" level="WARN" additivity="false">
+		<appender-ref ref="ConsoleAppender" />
+	</logger>
+
+	<root level="DEBUG">
+		<appender-ref ref="ConsoleAppender" />
+	</root>
+</configuration>
