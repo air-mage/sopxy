@@ -51,14 +51,7 @@ public class SocketProvider
                     {
                         logger.debug("Socked responded");
 
-                        try
-                        {
-                            return new Socket(LOCALHOST, playerPort);
-                        }
-                        catch (IOException e)
-                        {
-                            throw new InternalException("Unable to return local player socket", e);
-                        }
+                        return new Socket(LOCALHOST, playerPort);
                     }
                 }
             }

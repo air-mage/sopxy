@@ -273,10 +273,6 @@
 		<artifactId>logback-core</artifactId>
 	</dependency>
 	<dependency>
-		<groupId>org.logback-extensions</groupId>
-		<artifactId>logback-ext-spring</artifactId>
-	</dependency>
-	<dependency>
 		<groupId>javax.servlet</groupId>
 		<artifactId>javax.servlet-api</artifactId>
 		<scope>provided</scope>
@@ -288,6 +284,15 @@
 	<dependency>
 		<groupId>com.google.guava</groupId>
 		<artifactId>guava</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>jcl-over-slf4j</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>jul-to-slf4j</artifactId>
+		<version>1.7.7</version>
 	</dependency>
 	</dependencies>
 

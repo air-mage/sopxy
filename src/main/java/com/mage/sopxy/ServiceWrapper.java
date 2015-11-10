@@ -108,7 +108,7 @@ public class ServiceWrapper implements Closeable
 
         if (process.isAlive())
         {
-            process.destroy();
+            process.destroyForcibly();
         }
 
         while(process.isAlive())

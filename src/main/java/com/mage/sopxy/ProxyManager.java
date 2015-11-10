@@ -1,8 +1,13 @@
 package com.mage.sopxy;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,8 +20,6 @@ import org.slf4j.LoggerFactory;
 public class ProxyManager
 {
     private static final int RESPONSE_BUFFER_SIZE = 65535;
-
-    private static final int REQUEST_BUFFER_SIZE = 1024;
 
     private final static Logger logger = LoggerFactory.getLogger(ProxyManager.class);
 
@@ -38,39 +41,30 @@ public class ProxyManager
     }
 
 
-    public ProxyManager proxyRequests(final InputStream clientInputStream,
-            final OutputStream serverOutputStream)
+    public ProxyManager proxyResponses(final InputStream serverInputStream, final OutputStream clientOutputStream)
     {
-        logger.debug("Starting client to server communication proxy");
-        threads.submit(new ProxyThread(REQUEST_BUFFER_SIZE, proxyLatch, clientInputStream, serverOutputStream));
+        logger.debug("Starting server to client communication proxy thread");
+
+        threads.submit(
+                new ProxyThread("Responses", RESPONSE_BUFFER_SIZE, proxyLatch, serverInputStream, clientOutputStream));
 
         return this;
     }
 
 
-    public ProxyManager proxyResponses(final InputStream serverInputStream,
-            final OutputStream clientOutputStream)
+    public void tillClientGone()
     {
-        logger.debug("Starting server to client communication proxy");
-        threads.submit(new ProxyThread(RESPONSE_BUFFER_SIZE, proxyLatch, serverInputStream, clientOutputStream));
-
-        return this;
-    }
-
-
-    public void forever()
-    {
-        logger.debug("Waiting till one of proxy threads dies");
+        logger.debug("Waiting till proxy threads dies");
         try
         {
             proxyLatch.await();
         }
-        catch (InterruptedException e)
+        catch (final InterruptedException e)
         {
             logger.info("Terminating proxy threads");
 
             threads.shutdownNow();
-            
+
             while (!threads.isTerminated())
             {
                 logger.debug("Waiting for threads to terminate");
@@ -79,12 +73,42 @@ public class ProxyManager
                 {
                     Thread.sleep(100L);
                 }
-                catch (InterruptedException e1)
+                catch (final InterruptedException e1)
                 {
                     logger.info("Unable to wait for proxy threads to die. Quitting");
                     break;
                 }
             }
+        }
+    }
+
+
+    public ProxyManager sendHeaders(final Map<String, String> headers, final OutputStream serverOutputStream)
+            throws InternalException
+    {
+        try
+        {
+            final Writer w = new OutputStreamWriter(serverOutputStream);
+
+            logger.debug("Writing GET");
+
+            w.write("GET /sopxy/149257 HTTP/1.1");
+            w.flush();
+
+            logger.debug("Writing headers");
+
+            for (Entry<String, String> e : headers.entrySet())
+            {
+                w.write(e.getKey() + ": " + e.getValue());
+                w.flush();
+            }
+
+            return this;
+        }
+        catch (IOException e1)
+        {
+            logger.error("Unable to send headers", e1);
+            throw new InternalException("Unable to send headers", e1);
         }
     }
 }

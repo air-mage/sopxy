@@ -14,6 +14,8 @@ class ProxyThread extends Thread
 {
     private final static Logger logger = LoggerFactory.getLogger(ProxyThread.class);
 
+    private final String name;
+
     private final CountDownLatch latch;
 
     private final InputStream is;
@@ -23,9 +25,11 @@ class ProxyThread extends Thread
     private final byte[] buffer;
 
 
-    public ProxyThread(final int bufferSize, final CountDownLatch latch, final InputStream is, final OutputStream os)
+    public ProxyThread(final String name, final int bufferSize, final CountDownLatch latch, final InputStream is,
+            final OutputStream os)
     {
         super();
+        this.name = name;
         this.buffer = new byte[bufferSize];
         this.latch = latch;
         this.is = is;
@@ -36,6 +40,7 @@ class ProxyThread extends Thread
     @Override
     public void run()
     {
+        logger.debug("{} starting", name);
         int bytesRead;
         try
         {
@@ -53,5 +58,7 @@ class ProxyThread extends Thread
         {
             latch.countDown();
         }
+
+        logger.debug("{} shut down", name);
     }
 }
