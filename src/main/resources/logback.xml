@@ -13,6 +13,10 @@
 	<logger name="org.springframework" level="WARN" additivity="false">
 		<appender-ref ref="ConsoleAppender" />
 	</logger>
+	
+	<logger name="com.mage.sopxy.ProxyThread" level="TRACE" additivity="false">
+		<appender-ref ref="ConsoleAppender" />
+	</logger>
 
 	<root level="DEBUG">
 		<appender-ref ref="ConsoleAppender" />

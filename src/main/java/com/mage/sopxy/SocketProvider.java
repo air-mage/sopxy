@@ -4,36 +4,35 @@ package com.mage.sopxy;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SopcastSocketProvider
+public class SocketProvider
 {
     private static final String LOCALHOST = "localhost";
 
-    private final static Logger logger = LoggerFactory.getLogger(SopcastSocketProvider.class);
+    private final static Logger logger = LoggerFactory.getLogger(SocketProvider.class);
 
     private final static String TEST_STRING = "Range:bytes=0-";
 
     private final int playerPort;
 
 
-    public static SopcastSocketProvider newProvider(int playerPort)
+    public static SocketProvider newProvider(int playerPort)
     {
-        return new SopcastSocketProvider(playerPort);
+        return new SocketProvider(playerPort);
     }
 
 
-    private SopcastSocketProvider(int playerPort)
+    private SocketProvider(int playerPort)
     {
         this.playerPort = playerPort;
     }
 
 
-    public Optional<Socket> awaitSocketAvailable(int timeoutSeconds)
+    public Socket awaitSocketAvailable(int timeoutSeconds) throws InternalException
     {
         logger.info("Waiting {} seconds for process to init socket on port {}", timeoutSeconds, playerPort);
 
@@ -52,13 +51,20 @@ public class SopcastSocketProvider
                     {
                         logger.debug("Socked responded");
 
-                        return Optional.of(new Socket(LOCALHOST, playerPort));
+                        try
+                        {
+                            return new Socket(LOCALHOST, playerPort);
+                        }
+                        catch (IOException e)
+                        {
+                            throw new InternalException("Unable to return local player socket", e);
+                        }
                     }
                 }
             }
             catch (final IOException ignore)
             {
-                logger.debug("Socket not up yet", ignore);
+                logger.debug("Socket not up yet");
             }
 
             try
@@ -75,7 +81,8 @@ public class SopcastSocketProvider
         while (i++ < timeoutSeconds);
 
         logger.debug("Socket not available");
-        return Optional.empty();
+
+        throw new InternalException("Unable to wait for socket for given timeout");
     }
 
 }

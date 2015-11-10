@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SopcastService implements Closeable
+public class ServiceWrapper implements Closeable
 {
-    private final static Logger logger = LoggerFactory.getLogger(SopcastService.class);
+    private final static Logger logger = LoggerFactory.getLogger(ServiceWrapper.class);
 
     private final static String SERVICE = "sp-sc-auth";
 
@@ -26,36 +26,43 @@ public class SopcastService implements Closeable
     private Process process;
 
 
-    public static SopcastService start(final String channelId) throws IOException
+    public static ServiceWrapper start(final String channelId) throws InternalException
     {
-        final SopcastService service = new SopcastService(channelId);
+        final ServiceWrapper service = new ServiceWrapper(channelId);
         service.start();
 
         return service;
     }
 
 
-    private SopcastService(final String channelId)
+    private ServiceWrapper(final String channelId)
     {
         super();
         this.channelId = channelId;
     }
 
 
-    private void start() throws IOException
+    private void start() throws InternalException
     {
         final Entry<Integer, Integer> ports = findPorts();
 
         logger.info("Launching: {} {}{} {} {}", SERVICE, PARAM_URL, channelId, ports.getKey(), ports.getValue());
 
-        process = new ProcessBuilder(SERVICE, PARAM_URL + channelId, String.valueOf(ports.getKey()),
-                String.valueOf(ports.getValue())).start();
+        try
+        {
+            process = new ProcessBuilder(SERVICE, PARAM_URL + channelId, String.valueOf(ports.getKey()),
+                    String.valueOf(ports.getValue())).start();
+        }
+        catch (IOException e)
+        {
+            throw new InternalException("Unable to spawn nested process", e);
+        }
 
         port = ports.getValue();
     }
 
 
-    private Entry<Integer, Integer> findPorts() throws IOException
+    private Entry<Integer, Integer> findPorts() throws InternalException
     {
         final Integer localPort;
         final Integer playerPort;
@@ -72,8 +79,7 @@ public class SopcastService implements Closeable
         }
         catch (final IOException e)
         {
-            logger.warn("Unable to find two local ports", e);
-            throw e;
+            throw new InternalException("Unable to find two local ports", e);
         }
 
         logger.debug("Found ports to use: local={}; player={}", localPort, playerPort);
@@ -105,6 +111,11 @@ public class SopcastService implements Closeable
             process.destroy();
         }
 
+        while(process.isAlive())
+        {
+            
+        }
+        
         logger.debug("Process quit with code: {}", process.exitValue());
     }
 }

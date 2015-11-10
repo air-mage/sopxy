@@ -12,33 +12,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SopcastProxyController
+public class ProxyManager
 {
     private static final int RESPONSE_BUFFER_SIZE = 65535;
 
     private static final int REQUEST_BUFFER_SIZE = 1024;
 
-    private final static Logger logger = LoggerFactory.getLogger(SopcastProxyController.class);
+    private final static Logger logger = LoggerFactory.getLogger(ProxyManager.class);
 
     private final ExecutorService threads;
 
     private final CountDownLatch proxyLatch = new CountDownLatch(1);
 
 
-    public static SopcastProxyController newProxy(final String channelId)
+    public static ProxyManager newProxy(final String channelId)
     {
-        return new SopcastProxyController(channelId);
+        return new ProxyManager(channelId);
     }
 
 
-    private SopcastProxyController(final String channelId)
+    private ProxyManager(final String channelId)
     {
         threads = Executors.newFixedThreadPool(2,
                 new ThreadFactoryBuilder().setNameFormat("sop-" + channelId + "-%d").setDaemon(true).build());
     }
 
 
-    public SopcastProxyController proxyRequests(final InputStream clientInputStream,
+    public ProxyManager proxyRequests(final InputStream clientInputStream,
             final OutputStream serverOutputStream)
     {
         logger.debug("Starting client to server communication proxy");
@@ -48,7 +48,7 @@ public class SopcastProxyController
     }
 
 
-    public SopcastProxyController proxyResponses(final InputStream serverInputStream,
+    public ProxyManager proxyResponses(final InputStream serverInputStream,
             final OutputStream clientOutputStream)
     {
         logger.debug("Starting server to client communication proxy");

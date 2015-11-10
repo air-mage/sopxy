@@ -10,12 +10,25 @@ public class LocalTest
 {
     public static void main(final String[] args) throws IOException
     {
-        final ProxyController controller = new ProxyController();
-
-        try (final ServerSocket ss = new ServerSocket(8080))
+        while (true)
         {
-            final Socket socket = ss.accept();
-            controller.process(socket.getInputStream(), socket.getOutputStream());
+            final ProxyServlet controller = new ProxyServlet();
+
+            try (final ServerSocket ss = new ServerSocket(8080))
+            {
+                try (final Socket socket = ss.accept())
+                {
+                    try
+                    {
+                        controller.process(socket.getInputStream(), socket.getOutputStream());
+                    }
+                    catch (InternalException e)
+                    {
+                        socket.getOutputStream().write(e.getMessage().getBytes());
+                        socket.getOutputStream().flush();
+                    }
+                }
+            }
         }
     }
 }
