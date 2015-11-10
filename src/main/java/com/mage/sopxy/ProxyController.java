@@ -34,36 +34,34 @@ public class ProxyController extends HttpServlet
 
     protected void process(InputStream clientInputStream, OutputStream clientOutputStream)
     {
-        final String channelId = readChannelId(clientInputStream);
-        if (channelId == null)
+        final Either<String, String> channelId = readChannelId(clientInputStream);
+        if (channelId.isRight())
         {
+            sendError(clientOutputStream, channelId.getRight());
             return;
         }
 
-        final SopcastServiceControl serviceControl = new SopcastServiceControl(channelId);
-
-        try (final Socket server = serviceControl.start())
+        try(final SopcastService service = SopcastService.start(channelId.getLeft()))
         {
-            if (server != null)
+            try (final Socket server = SopcastSocketProvider.newProvider(service.getPort()).awaitSocketAvailable(10))
             {
-                SopcastProxyController.newProxy(channelId) //
-                        .proxyRequests(clientInputStream, server.getOutputStream()) //
-                        .proxyResponses(server.getInputStream(), clientOutputStream) //
-                        .forever();
+                if (server != null)
+                {
+                    SopcastProxyController.newProxy(channelId) //
+                            .proxyRequests(clientInputStream, server.getOutputStream()) //
+                            .proxyResponses(server.getInputStream(), clientOutputStream) //
+                            .forever();
+                }
             }
-        }
-        catch (final IOException e)
-        {
-            logger.error("IOError", e);
-        }
-        finally
-        {
-            serviceControl.stop();
+            catch (final IOException e)
+            {
+                logger.error("IOError", e);
+            }
         }
     }
 
 
-    private String readChannelId(InputStream clientInputStream)
+    private Either<String, String> readChannelId(InputStream clientInputStream)
     {
         try
         {
@@ -76,13 +74,30 @@ public class ProxyController extends HttpServlet
 
             logger.debug("Proxying for path: {}", channel);
 
-            return channel;
+            return Either.left(channel);
         }
         catch (final IOException e)
         {
             logger.warn("Unable to extract channel from path", e);
 
-            return null;
+            return Either.right("Unable to find channel in request");
+        }
+    }
+
+
+    private void sendError(OutputStream output, String message)
+    {
+        logger.info("Responding with error: {}", message);
+
+        try
+        {
+            output.write(message.getBytes());
+            output.flush();
+        }
+        catch (IOException e)
+        {
+            // ignore
+            logger.error("Error writing error response", e);
         }
     }
 }
