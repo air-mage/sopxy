@@ -15,6 +15,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mage.sopxy.internal.InternalException;
+import com.mage.sopxy.internal.SocketProvider;
+import com.mage.sopxy.proxy.ProxyManager;
+import com.mage.sopxy.service.ServiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,10 +89,10 @@ public class ProxyServlet extends HttpServlet implements ServletContextListener
     protected void process(final String channelId, OutputStream clientOutputStream, Map<String, String> headers)
             throws InternalException
     {
-        try (final ServiceWrapper service = ServiceWrapper.start(channelId))
+        final int servicePort = ServiceManager.getInstance().startService(channelId);
+        try
         {
-            final int port = service.getPort();
-            try (final Socket server = SocketProvider.newProvider(port).awaitSocketAvailable(10))
+            try (final Socket server = SocketProvider.newProvider(servicePort).awaitSocketAvailable(10))
             {
                 ProxyManager.newProxy(channelId) //
                         .proxyResponses(server.getInputStream(), clientOutputStream) //
@@ -99,6 +103,10 @@ public class ProxyServlet extends HttpServlet implements ServletContextListener
             {
                 throw new InternalException("Error processing server socket", e);
             }
+        }
+        finally
+        {
+            ServiceManager.getInstance().stopService(channelId);
         }
     }
 

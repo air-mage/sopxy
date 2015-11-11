@@ -1,4 +1,4 @@
-package com.mage.sopxy;
+package com.mage.sopxy.proxy;
 
 
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.mage.sopxy.internal.InternalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,11 +90,6 @@ public class ProxyManager
         try
         {
             final Writer w = new OutputStreamWriter(serverOutputStream);
-
-            logger.debug("Writing GET");
-
-            w.write("GET /sopxy/149257 HTTP/1.1");
-            w.flush();
 
             logger.debug("Writing headers");
 

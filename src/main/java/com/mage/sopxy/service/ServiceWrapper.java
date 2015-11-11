@@ -1,17 +1,18 @@
-package com.mage.sopxy;
+package com.mage.sopxy.service;
 
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.AbstractMap;
 import java.util.Map.Entry;
 
+import com.mage.sopxy.internal.InternalException;
+import com.mage.sopxy.internal.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class ServiceWrapper implements Closeable
+class ServiceWrapper
 {
     private final static Logger logger = LoggerFactory.getLogger(ServiceWrapper.class);
 
@@ -94,8 +95,7 @@ public class ServiceWrapper implements Closeable
     }
 
 
-    @Override
-    public void close()
+    public void stop(final int processKillTimeout)
     {
         logger.info("Destroying process");
 
@@ -111,11 +111,25 @@ public class ServiceWrapper implements Closeable
             process.destroyForcibly();
         }
 
-        while(process.isAlive())
-        {
-            
-        }
-        
+        awaitProcessTermination(processKillTimeout);
+
         logger.debug("Process quit with code: {}", process.exitValue());
+    }
+
+
+    private void awaitProcessTermination(final int processKillTimeout)
+    {
+        final Timer t = new Timer(processKillTimeout * 1000);
+        while (process.isAlive() && t.timeLeft())
+        {
+            try
+            {
+                Thread.sleep(100L);
+            }
+            catch (InterruptedException e)
+            {
+                break;
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.mage.sopxy;
+package com.mage.sopxy.internal;
 
 
 import java.io.IOException;

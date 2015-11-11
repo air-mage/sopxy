@@ -1,4 +1,4 @@
-package com.mage.sopxy;
+package com.mage.sopxy.internal;
 
 public class InternalException extends Exception
 {
