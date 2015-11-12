@@ -71,18 +71,26 @@ public class ProxyServlet extends HttpServlet implements ServletContextListener
     }
 
 
-    private String extractChannelId(final HttpServletRequest request)
+    private String extractChannelId(final HttpServletRequest request) throws InternalException
     {
         final String pathInfo = request.getPathInfo();
 
         logger.debug("Extractin channel id from: {}", pathInfo);
 
-        final String[] path = pathInfo.split("/");
-        final String channelId = path[path.length - 1];
+        try
+        {
+            final String[] path = pathInfo.split("/");
+            final String channelId = path[path.length - 1];
 
-        logger.debug("Channel id extracted: {}", channelId);
+            logger.debug("Channel id extracted: {}", channelId);
 
-        return channelId;
+            return channelId;
+        }
+        catch (Exception e)
+        {
+            logger.error("Unable to extract channel id", e);
+            throw new InternalException("Unable to extract channel id");
+        }
     }
 
 

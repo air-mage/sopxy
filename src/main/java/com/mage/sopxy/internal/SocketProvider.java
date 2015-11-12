@@ -20,58 +20,52 @@ public class SocketProvider
     private final int playerPort;
 
 
-    public static SocketProvider newProvider(int playerPort)
+    public static SocketProvider newProvider(final int playerPort)
     {
         return new SocketProvider(playerPort);
     }
 
 
-    private SocketProvider(int playerPort)
+    private SocketProvider(final int playerPort)
     {
         this.playerPort = playerPort;
     }
 
 
-    public Socket awaitSocketAvailable(int timeoutSeconds) throws InternalException
+    public Socket awaitSocketAvailable(final int timeoutSeconds) throws InternalException
     {
         logger.info("Waiting {} seconds for process to init socket on port {}", timeoutSeconds, playerPort);
 
-        int i = 0;
-        do
+        final Timer t = new Timer(timeoutSeconds * 1000);
+        while (t.timeLeft())
         {
-            try
+            try (final Socket testSocket = new Socket(LOCALHOST, playerPort))
             {
-                try (final Socket testSocket = new Socket(LOCALHOST, playerPort))
+                final OutputStream os = testSocket.getOutputStream();
+                os.write(TEST_STRING.getBytes());
+                os.flush();
+
+                if (testSocket.getInputStream().read() != -1)
                 {
-                    final OutputStream os = testSocket.getOutputStream();
-                    os.write(TEST_STRING.getBytes());
-                    os.flush();
+                    logger.trace("Socked responded");
 
-                    if (testSocket.getInputStream().read() != -1)
-                    {
-                        logger.debug("Socked responded");
-
-                        return new Socket(LOCALHOST, playerPort);
-                    }
+                    return new Socket(LOCALHOST, playerPort);
                 }
             }
             catch (final IOException ignore)
             {
-                logger.debug("Socket not up yet");
+                // ignore, no socket yet
             }
 
             try
             {
-                Thread.sleep(1000L);
-
-                logger.debug("Retrying");
+                Thread.sleep(100L);
             }
             catch (final InterruptedException e)
             {
                 break;
             }
         }
-        while (i++ < timeoutSeconds);
 
         logger.debug("Socket not available");
 
