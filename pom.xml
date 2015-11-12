@@ -10,290 +10,36 @@
 		<java-version>1.8</java-version>
 		<slf4j-version>1.7.5</slf4j-version>
 		<logback.version>1.1.2</logback.version>
-		<spring-version>4.1.6.RELEASE</spring-version>
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>18.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>3.4</version>
-			</dependency>
-
-			<!-- Versioning and auditing -->
-
-			<!-- DB -->
-
-			<dependency>
-				<groupId>org.mybatis</groupId>
-				<artifactId>mybatis</artifactId>
-				<version>3.3.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.mybatis</groupId>
-				<artifactId>mybatis-spring</artifactId>
-				<version>1.2.3</version>
-			</dependency>
-
-			<!-- DB -->
-
-			<dependency>
-				<groupId>org.apache.tomcat</groupId>
-				<artifactId>tomcat-jdbc</artifactId>
-				<version>7.0.26</version>
-			</dependency>
-			<dependency>
-				<groupId>com.oracle</groupId>
-				<artifactId>ojdbc6</artifactId>
-				<version>11.2.0.2.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.tomcat</groupId>
-				<artifactId>tomcat-juli</artifactId>
-				<version>7.0.26</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>1.4.188</version>
-				<scope>test</scope>
-			</dependency>
-
-			<!-- Spring -->
-
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${spring-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>${spring-version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring-version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context-support</artifactId>
-				<version>${spring-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-web</artifactId>
-				<version>${spring-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jdbc</artifactId>
-				<version>${spring-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-webmvc</artifactId>
-				<version>${spring-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-aop</artifactId>
-				<version>${spring-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-aspects</artifactId>
-				<version>${spring-version}</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-web</artifactId>
-				<version>${spring-security-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-core</artifactId>
-				<version>${spring-security-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-config</artifactId>
-				<version>${spring-security-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-test</artifactId>
-				<version>${spring-security-version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.panbet.common</groupId>
-				<artifactId>panbet-common-hessian</artifactId>
-				<version>${hessian-version}</version>
-			</dependency>
-
-			<!-- Logging -->
-
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-ext</artifactId>
-				<version>${slf4j-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${logback.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.logback-extensions</groupId>
-				<artifactId>logback-ext-spring</artifactId>
-				<version>0.1.2</version>
-				<exclusions>
-					<exclusion>
-						<groupId>ch.qos.logback</groupId>
-						<artifactId>logback-classic</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jcl-over-slf4j</artifactId>
-				<version>1.7.7</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-			<!-- Testing -->
-
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.11</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>1.10.19</version>
-				<scope>test</scope>
-			</dependency>
-
-			<!-- Validation -->
-
-			<dependency>
-				<groupId>javax.validation</groupId>
-				<artifactId>validation-api</artifactId>
-				<version>1.0.0.GA</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>4.2.0.Final</version>
-				<exclusions>
-					<exclusion>
-						<groupId>javax.validation</groupId>
-						<artifactId>validation-api</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-
-
-
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
-				<version>3.1.0</version>
-				<scope>provided</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-commons-core</artifactId>
-				<version>1.4.1.RELEASE</version>
-			</dependency>
-			<dependency>
-				<groupId>org.javers</groupId>
-				<artifactId>javers-core</artifactId>
-				<version>1.3.4</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<dependencies>
-	<dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-api</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>ch.qos.logback</groupId>
-		<artifactId>logback-classic</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>ch.qos.logback</groupId>
-		<artifactId>logback-core</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>javax.servlet-api</artifactId>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-lang3</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>com.google.guava</groupId>
-		<artifactId>guava</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>jcl-over-slf4j</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.slf4j</groupId>
-		<artifactId>jul-to-slf4j</artifactId>
-		<version>1.7.7</version>
-	</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -309,110 +55,21 @@
 				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+				</configuration>
 			</plugin>
 		</plugins>
-		
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.17</version>
-					<configuration>
-						<excludes>
-							<exclude>**/*IT.java</exclude>
-						</excludes>
-					</configuration>
-					<executions>
-						<execution>
-							<id>integration-test</id>
-							<goals>
-								<goal>test</goal>
-							</goals>
-							<phase>integration-test</phase>
-							<configuration>
-								<excludes>
-									<exclude>none</exclude>
-								</excludes>
-								<includes>
-									<include>**/*IT.java</include>
-								</includes>
-								<argLine>-Dconfig=classpath:</argLine>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.3</version>
-					<configuration>
-						<source>${java-version}</source>
-						<target>${java-version}</target>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<version>2.6</version>
-				</plugin>
-
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>tomcat-maven-plugin</artifactId>
-					<version>1.1</version>
-					<configuration>
-						<url>http://${tomcat-location}/manager/text</url>
-						<server>TomcatUtils</server>
-						<path>${deploy-path}</path>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.6</version>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.10.3</version>
-					<executions>
-						<execution>
-							<id>attach-javadocs</id>
-							<phase>package</phase>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-							<configuration>
-								<additionalparam>-Xdoclint:none</additionalparam>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<version>2.4</version>
-					<executions>
-						<execution>
-							<id>attach-sources</id>
-							<phase>package</phase>
-							<goals>
-								<goal>jar-no-fork</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-
-			</plugins>
-		</pluginManagement>
 	</build>
 </project>

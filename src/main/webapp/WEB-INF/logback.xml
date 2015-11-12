@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!DOCTYPE xml>
 <configuration>
-	<property name="defaultPattern"
-		value="%d{yyyy-MM-dd HH:mm:ss,SSS Z} %-5p [%t] [%c]: %msg%n" />
+	<property name="defaultPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS Z} %-5p [%t] [%c]: %msg%n" />
 
 	<appender name="ConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -13,7 +12,7 @@
 	<logger name="org.springframework" level="WARN" additivity="false">
 		<appender-ref ref="ConsoleAppender" />
 	</logger>
-	
+
 	<logger name="com.mage.sopxy.ProxyThread" level="TRACE" additivity="false">
 		<appender-ref ref="ConsoleAppender" />
 	</logger>
