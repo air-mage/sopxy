@@ -98,19 +98,17 @@ public class ProxyServlet extends HttpServlet implements ServletContextListener
             throws InternalException
     {
         final int servicePort = ServiceManager.getInstance().startService(channelId);
-        try
+        
+        try (final Socket server = SocketProvider.newProvider(servicePort).awaitSocketAvailable(10))
         {
-            try (final Socket server = SocketProvider.newProvider(servicePort).awaitSocketAvailable(10))
-            {
-                ProxyManager.newProxy(channelId) //
-                        .proxyResponses(server.getInputStream(), clientOutputStream) //
-                        .sendHeaders(headers, server.getOutputStream()) //
-                        .tillClientGone();
-            }
-            catch (IOException e)
-            {
-                throw new InternalException("Error processing server socket", e);
-            }
+            ProxyManager.newProxy(channelId) //
+                    .proxyResponses(server.getInputStream(), clientOutputStream) //
+                    .sendHeaders(headers, server.getOutputStream()) //
+                    .tillClientGone();
+        }
+        catch (IOException e)
+        {
+            throw new InternalException("Error processing server socket", e);
         }
         finally
         {
